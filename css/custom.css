@@ -1,0 +1,22 @@
+.pad {
+    border: solid black 1px;
+    background-color: #ABABAB;
+    width: 150px;
+    height: 80px;
+    display: inline-block;
+    padding: 5px;
+    text-align: center;
+    margin: 5px;
+    padding-top: 70px;
+}
+
+.pressed-pad {
+    border: solid red 2px;
+    background-color: green;
+}
+
+.sound-name {
+    margin-top: 5px;
+    border: solid 2px #336BC2;
+    background-color: #95B9FF;
+}

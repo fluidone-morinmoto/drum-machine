@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="it" >
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+        <title>Fluid Drum Machine</title>
+        <link href="css/custom.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="js/jquery-3.5.1.min.js"></script>
+    </head>
+    <body>
+
+        <div id="drum-pad">
+
+        </div>
+
+        <p>
+            Press the related button on each pad for play the sound. If the
+            checkbox is checked other playinf sounds will be stopped
+        </p>
+
+        <!--
+        Add an audio tag for each sound you want to play. Valorize:
+        * key-code: with the key int value of the button you have choose;
+        * src: with the absolute or relative path of the sound
+        -->
+        <div id="audio-container">
+            <audio key-code="65" src="sounds/kick.mp3">
+            </audio>
+            <audio key-code="83" src="sounds/snare.mp3">
+            </audio>
+            <audio key-code="68" src="sounds/hihat.mp3">
+            </audio>
+            <audio key-code="96" src="sounds/void.mp3">
+            </audio>
+        </div>
+
+
+        <script type="text/javascript">
+
+            // From an object list creates audio tags, source tags and divs
+            // to diplay the pad
+            var pressedPad = undefined;
+            var playingSounds = [];
+
+            function init() {
+
+                var htmlContainer = $('#drum-pad');
+                var audioContainer = $('#audio-container');
+                var audios = audioContainer.children();
+                $(audios).each(function() {
+                    var $this = $(this);
+                    var pad = $("<div></div>");
+                    $this.addClass('drum-audio');
+                    var keyCode = $this.attr('key-code');
+                    var padText = String.fromCharCode(keyCode);
+                    pad.text(padText);
+                    pad.addClass('pad');
+                    pad.attr('key-code', keyCode);
+                    var checkbox = $("<input />");
+                    checkbox.addClass('interrupt');
+                    checkbox.attr('type', 'checkbox');
+                    pad.append(checkbox);
+                    var divDescription = $("<div></div>");
+                    divDescription.addClass('sound-name');
+                    var tokens = $this.attr('src').split('/');
+                    var onlyFilename = tokens[tokens.length - 1];
+                    divDescription.text(onlyFilename);
+                    pad.append(divDescription);
+                    htmlContainer.append(pad);
+                });
+            }
+
+            function stopSounds() {
+                $(playingSounds).each(function() {
+                    var $this = $(this)[0];
+                    $this.pause();
+                    $this.currentTime = 0;
+                });
+                playingSounds = [];
+            }
+
+            $(document).on('keydown', function(e) {
+                console.log("You pressed " + e.keyCode);
+                var audio = $('audio[key-code=' + e.keyCode + ']');
+                var sound = $(audio)[0];
+                if (!sound) {
+                    return;
+                }
+                playingSounds.push(sound);
+                var pad = $('div[key-code=' + e.keyCode + ']');
+                pressedPad = pad;
+                var checkbox = pad.find('.interrupt');
+                if (checkbox.is(':checked')) {
+                    stopSounds();
+                }
+                sound.play();
+            });
+
+            init();
+        </script>
+    </body>
+</html>
